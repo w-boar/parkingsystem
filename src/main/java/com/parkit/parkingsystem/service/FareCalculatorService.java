@@ -14,8 +14,10 @@ public class FareCalculatorService {
 
         Date inHour = ticket.getInTime();
         Date outHour = ticket.getOutTime();
+       int idTicket = ticket.getId();
         System.out.println(inHour);
         System.out.println(outHour);
+        System.out.println(idTicket);
         //TODO: Some tests are failing here. Need to check if this logic is correct
         double duration = (double)(outHour.getTime()-inHour.getTime())/3600000;
         System.out.println(duration);
