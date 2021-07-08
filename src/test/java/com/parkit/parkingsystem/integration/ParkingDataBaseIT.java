@@ -50,19 +50,29 @@ public class ParkingDataBaseIT {
 
     }
 
-    @Test
+    @Test // check that a ticket is actually saved in DB and Parking table is updated with availability
     public void testParkingACar(){
+        //GIVEN
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        //WHEN
         parkingService.processIncomingVehicle();
-        //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
+        Ticket ticket = ticketDAO.getTicket("ABCDEF");
+        //THEN
+        assertEquals( "ABCDEF", ticket.getVehicleRegNumber());
+        assertEquals(false, ticket.getParkingSpot().isAvailable());
 
     }
 
-    @Test
+    @Test // check that the fare generated and out time are populated correctly in the database
     public void testParkingLotExit(){
+        //GIVEN
         testParkingACar();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        //WHEN
         parkingService.processExitingVehicle();
-        //TODO: check that the fare generated and out time are populated correctly in the database
+        Ticket ticket = ticketDAO.getTicket("ABCDEF");
+        //THEN
+        assertNotNull(ticket.getOutTime());
+        assertNotNull(ticket.getPrice());
     }
 }
