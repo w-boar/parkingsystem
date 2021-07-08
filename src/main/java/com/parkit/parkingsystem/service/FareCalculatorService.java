@@ -12,13 +12,12 @@ public class FareCalculatorService {
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
 
-        Date inHour = ticket.getInTime();
-        Date outHour = ticket.getOutTime();
-        System.out.println(inHour);
-        System.out.println(outHour);
-        //TODO: Some tests are failing here. Need to check if this logic is correct
-        double duration = (double)(outHour.getTime()-inHour.getTime())/3600000;
-        System.out.println(duration);
+        long inHour = ticket.getInTime().getTime();
+        long outHour = ticket.getOutTime().getTime();
+
+        double conversion = 60 * 60 * 1000;
+        double duration = (outHour-inHour) / conversion;
+
         switch (ticket.getParkingSpot().getParkingType()){
             case CAR: {
                 ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
@@ -28,7 +27,7 @@ public class FareCalculatorService {
                 ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
                 break;
             }
-            default: throw new IllegalArgumentException("Unkown Parking Type");
+            default: throw new IllegalArgumentException("Unknown Parking Type");
         }
     }
 }
