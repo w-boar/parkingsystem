@@ -7,10 +7,7 @@ import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,26 +38,26 @@ public class ParkingDataBaseIT {
     @BeforeEach
     private void setUpPerTest() throws Exception {
         when(inputReaderUtil.readSelection()).thenReturn(1);
-        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("UVWXYZ");
         dataBasePrepareService.clearDataBaseEntries();
     }
 
     @AfterAll
     private static void tearDown(){
-
-    }
+            }
 
     @Test // check that a ticket is actually saved in DB and Parking table is updated with availability
     public void testParkingACar(){
         //GIVEN
+        dataBasePrepareService.clearDataBaseEntries();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         //WHEN
         parkingService.processIncomingVehicle();
-        Ticket ticket = ticketDAO.getTicket("ABCDEF");
+        Ticket ticket = ticketDAO.getTicket("UVWXYZ");
         //THEN
-        assertEquals( "ABCDEF", ticket.getVehicleRegNumber());
+        assertEquals( "UVWXYZ", ticket.getVehicleRegNumber());
         assertEquals(false, ticket.getParkingSpot().isAvailable());
-
+        assertEquals(1.0, ticket.getPrice());
     }
 
     @Test // check that the fare generated and out time are populated correctly in the database
@@ -70,9 +67,10 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         //WHEN
         parkingService.processExitingVehicle();
-        Ticket ticket = ticketDAO.getTicket("ABCDEF");
+        Ticket ticket = ticketDAO.getTicket("UVWXYZ");
+        System.out.println(ticket.getId());
         //THEN
         assertNotNull(ticket.getOutTime());
-        assertNotNull(ticket.getPrice());
+        assertEquals(0.0, ticket.getPrice());
     }
 }
