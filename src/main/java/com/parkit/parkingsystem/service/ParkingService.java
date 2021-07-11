@@ -34,10 +34,8 @@ public class ParkingService {
                 String vehicleRegNumber = getVehicleRegNumber();
                 //recurring user detection
                 TicketDAO ticketDAO2 = new TicketDAO();
-                Ticket oldTicket = new Ticket();
-                oldTicket = ticketDAO2.getTicket(vehicleRegNumber);
                 Ticket ticket = new Ticket();
-                if(oldTicket != null) {
+                if(ticketDAO2.getTicket(vehicleRegNumber) != null) {
                     System.out.println("Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
                     ticket.setPrice(0.95);
                 }
